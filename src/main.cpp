@@ -13,10 +13,10 @@
 #include "ModbusClientRTU.h"
 
 #ifndef MY_SSID
-#define MY_SSID "myssid"
+#define MY_SSID "mySSID"
 #endif
 #ifndef MY_PASS
-#define MY_PASS "testtesttest"
+#define MY_PASS "myPASSWORD"
 #endif
 
 char ssid[] = MY_SSID;                     // SSID and ...
@@ -32,42 +32,43 @@ ModbusBridgeWiFi MBbridge;
 // Setup() - initialization happens here
 void setup() {
 // Init Serial monitor
-  Serial.begin(115200);
-  while (!Serial) {}
-  Serial.println("__ OK __");
+  Serial2.begin(115200, SERIAL_8N1, GPIO_NUM_5, GPIO_NUM_17);
+  while (!Serial2) {}
+  Serial2.println("__ OK __");
 
 // Init Serial2 conneted to the RTU Modbus
 // (Fill in your data here!)
-  RTUutils::prepareHardwareSerial(Serial2);
-  Serial2.begin(9600, SERIAL_8N1, GPIO_NUM_5, GPIO_NUM_17);
+  RTUutils::prepareHardwareSerial(Serial);
+  Serial.begin(9600);
 
 // Connect to WiFi
   WiFi.begin(ssid, pass);
   delay(200);
   while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
+    Serial2.print('.');
     delay(1000);
   }
   IPAddress wIP = WiFi.localIP();
-  Serial.printf("IP address: %u.%u.%u.%u\n", wIP[0], wIP[1], wIP[2], wIP[3]);
+  Serial2.printf("IP address: %u.%u.%u.%u\n", wIP[0], wIP[1], wIP[2], wIP[3]);
 
 // Set RTU Modbus message timeout to 2000ms
-  MB.setTimeout(2000);
+  MB.setTimeout(100);
 // Start ModbusRTU background task on core 1
-  MB.begin(Serial2, 1);
+  MB.begin(Serial, 1);
 
 // Define and start WiFi bridge
 // ServerID 4: Server with remote serverID 1, accessed through RTU client MB
 //             All FCs accepted, with the exception of FC 06
   MBbridge.attachServer(247, 247, ANY_FUNCTION_CODE, &MB);
+  MBbridge.attachServer(246, 246, ANY_FUNCTION_CODE, &MB);
 
 // Check: print out all combinations served to Serial
   MBbridge.listServer();
 
-// Start the bridge. Port 502, 4 simultaneous clients allowed, 600ms inactivity to disconnect client
-  MBbridge.start(port, 4, 600);
+// Start the bridge. Port 502, 4 simultaneous clients allowed, 2000ms inactivity to disconnect client
+  MBbridge.start(port, 4, 2000);
 
-  Serial.printf("Use the shown IP and port %d to send requests!\n", port);
+  Serial2.printf("Use the shown IP and port %d to send requests!\n", port);
 
 // Your output on the Serial monitor should start with:
 //      __ OK __
