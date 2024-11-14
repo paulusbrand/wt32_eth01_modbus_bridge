@@ -8,16 +8,10 @@
 #include <WiFi.h>
 
 // Modbus bridge include
-#include "ModbusBridgeWiFi.h"
+#include "ModbusBridgeETH.h"
 // Modbus RTU client include
 #include "ModbusClientRTU.h"
 
-#ifndef MY_SSID
-#define MY_SSID "mySSID"
-#endif
-#ifndef MY_PASS
-#define MY_PASS "myPASSWORD"
-#endif
 
 char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
@@ -27,7 +21,7 @@ uint16_t port = 502;                       // port of modbus server
 ModbusClientRTU MB;
 
 // Create bridge
-ModbusBridgeWiFi MBbridge;
+ModbusBridgeEthernet MBbridge;
 
 // Setup() - initialization happens here
 void setup() {
@@ -40,16 +34,6 @@ void setup() {
 // (Fill in your data here!)
   RTUutils::prepareHardwareSerial(Serial);
   Serial.begin(9600);
-
-// Connect to WiFi
-  WiFi.begin(ssid, pass);
-  delay(200);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial2.print('.');
-    delay(1000);
-  }
-  IPAddress wIP = WiFi.localIP();
-  Serial2.printf("IP address: %u.%u.%u.%u\n", wIP[0], wIP[1], wIP[2], wIP[3]);
 
 // Set RTU Modbus message timeout to 2000ms
   MB.setTimeout(100);
