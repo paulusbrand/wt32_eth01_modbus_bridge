@@ -2,18 +2,18 @@
 #define Config_h
 
 // Hostname
-char hostname[] = "Modbus bridge 1";
+const char * hostname = "Modbus bridge 1";
 
 // Port of modbus server
-uint16_t modbus_port = 502;
+const uint16_t modbus_port = 502;
 
 // Maximum simultanious allowed clients
-uint8_t modbus_max_clients = 4;
+const uint8_t modbus_max_clients = 4;
 
 // Use 2000ms inactivity to disconnect client
-uint32_t modbus_client_timeout = 2000;
+const uint32_t modbus_client_timeout = 2000;
 
 // Modbus RTU timeout in ms
-uint32_t modbus_rtu_timeout = 100;
+const uint32_t modbus_rtu_timeout = 100;
 
 #endif
