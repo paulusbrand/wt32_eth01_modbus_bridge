@@ -32,7 +32,7 @@ void setup() {
   Serial.begin(9600);
 
 // Set RTU Modbus message timeout to 100ms
-  MB.setTimeout(100);
+  MB.setTimeout(modbus_rtu_timeout);
 // Start ModbusRTU background task on core 1
   MB.begin(Serial, 1);
 
@@ -51,7 +51,7 @@ void setup() {
   MBbridge.attachServer(246, 246, ANY_FUNCTION_CODE, &MB);
 
 // Start the bridge
-  MBbridge.start(modbus_port, modbus_max_clients, modbus_timeout);
+  MBbridge.start(modbus_port, modbus_max_clients, modbus_client_timeout);
 
   Serial2.printf("Use the shown IP and port %d to send requests!\n", modbus_port);
 }
