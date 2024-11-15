@@ -37,8 +37,8 @@ void setup() {
   MB.begin(Serial, 1);
 
   // Start ethernet
-  int result = ETH.begin(ETH_PHY_TYPE, ETH_PHY_ADDR, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_POWER, ETH_CLK_MODE);
   ETH.setHostname(hostname);
+  int result = ETH.begin(ETH_PHY_TYPE, ETH_PHY_ADDR, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_POWER, ETH_CLK_MODE);
 
   Serial2.print("result: "); Serial2.println(result);
   Serial2.print("ETH MAC: "); Serial2.println(ETH.macAddress());
