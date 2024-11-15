@@ -50,10 +50,10 @@ void setup() {
   MBbridge.attachServer(247, 247, ANY_FUNCTION_CODE, &MB);
   MBbridge.attachServer(246, 246, ANY_FUNCTION_CODE, &MB);
 
-// Start the bridge. Port 502, 4 simultaneous clients allowed, 2000ms inactivity to disconnect client
-  MBbridge.start(port, 4, 2000);
+// Start the bridge
+  MBbridge.start(modbus_port, modbus_max_clients, modbus_timeout);
 
-  Serial2.printf("Use the shown IP and port %d to send requests!\n", port);
+  Serial2.printf("Use the shown IP and port %d to send requests!\n", modbus_port);
 }
 
 void loop() {;;}
