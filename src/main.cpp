@@ -12,7 +12,8 @@
 // Modbus RTU client include
 #include "ModbusClientRTU.h"
 
-uint16_t port = 502;  // port of modbus server
+// Include configuration
+#include "config.h"
 
 // Create a ModbusRTU client instance
 ModbusClientRTU MB;
@@ -37,7 +38,7 @@ void setup() {
 
 // Start ethernet
   int result = ETH.begin(ETH_PHY_TYPE, ETH_PHY_ADDR, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_POWER, ETH_CLK_MODE);
-  ETH.setHostname("Modbus bridge 1");
+  ETH.setHostname(hostname);
 
   Serial2.print("result: "); Serial2.println(result);
   Serial2.print("ETH MAC: "); Serial2.println(ETH.macAddress());
