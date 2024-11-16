@@ -2,7 +2,7 @@
 #define Config_h
 
 // Hostname
-const char * hostname = "Modbus bridge 1\0";
+const char * hostname = "Modbus bridge 1";
 
 // Port of modbus server
 const uint16_t modbus_port = 502;
