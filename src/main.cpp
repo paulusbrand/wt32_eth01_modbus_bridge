@@ -3,6 +3,13 @@
 //               MIT license - see license.md for details
 // =================================================================================================
 // Includes: <Arduino.h> for Serial etc., WiFi.h for WiFi support
+//
+// Dependency Graph
+// |-- SPI @ 3.0.5
+// |-- eModbus @ 1.7.2+sha.18a5a88
+// |-- AsyncTCP @ 1.1.1+sha.17039c3
+// |-- WiFi @ 3.0.5
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include "HardwareSerial.h"
@@ -26,31 +33,31 @@ void WiFiEvent(WiFiEvent_t event)
 {
   switch (event) {
     case ARDUINO_EVENT_ETH_START:
-      Serial2.println("ETH Started");
+      Serial.println("ETH Started");
       ETH.setHostname(hostname);
       break;
     case ARDUINO_EVENT_ETH_CONNECTED:
-      Serial2.println("ETH Connected");
+      Serial.println("ETH Connected");
       break;
     case ARDUINO_EVENT_ETH_GOT_IP:
-      Serial2.print("ETH MAC: ");
-      Serial2.print(ETH.macAddress());
-      Serial2.print(", IPv4: ");
-      Serial2.print(ETH.localIP());
+      Serial.print("ETH MAC: ");
+      Serial.print(ETH.macAddress());
+      Serial.print(", IPv4: ");
+      Serial.print(ETH.localIP());
       if (ETH.fullDuplex()) {
-        Serial2.print(", FULL_DUPLEX");
+        Serial.print(", FULL_DUPLEX");
       }
-      Serial2.print(", ");
-      Serial2.print(ETH.linkSpeed());
-      Serial2.println("Mbps");
+      Serial.print(", ");
+      Serial.print(ETH.linkSpeed());
+      Serial.println("Mbps");
       break;
     case ARDUINO_EVENT_ETH_GOT_IP6:
-      Serial2.println("We even have IPv6!");
+      Serial.println("We even have IPv6!");
     case ARDUINO_EVENT_ETH_DISCONNECTED:
-      Serial2.println("ETH Disconnected");
+      Serial.println("ETH Disconnected");
       break;
     case ARDUINO_EVENT_ETH_STOP:
-      Serial2.println("ETH Stopped");
+      Serial.println("ETH Stopped");
       break;
     default:
       break;
@@ -58,19 +65,19 @@ void WiFiEvent(WiFiEvent_t event)
 }
 
 void setup() {
-  // Init Serial2 to monitor
-  Serial2.begin(115200, SERIAL_8N1, GPIO_NUM_5, GPIO_NUM_17);
-  while (!Serial2) {}
-  Serial2.println("__ OK __");
+  // Init Serial to monitor
+  Serial.begin(115200);
+  while (!Serial) {}
+  Serial.println("__ OK __");
 
-  // Init Serial connected to the RTU Modbus
-  RTUutils::prepareHardwareSerial(Serial);
-  Serial.begin(9600);
+  // Init Serial2 connected to the RTU Modbus
+  RTUutils::prepareHardwareSerial(Serial2);
+  Serial2.begin(9600, SERIAL_8N1, GPIO_NUM_5, GPIO_NUM_17);
 
   // Set RTU Modbus message timeout to 100ms
   MB.setTimeout(modbus_rtu_timeout);
   // Start ModbusRTU background task on core 1
-  MB.begin(Serial, 1);
+  MB.begin(Serial2, 1);
 
   // Register callback
   WiFi.onEvent(WiFiEvent);
@@ -85,7 +92,7 @@ void setup() {
   // Start the bridge
   MBbridge.start(modbus_port, modbus_max_clients, modbus_client_timeout);
 
-  Serial2.printf("Use the shown IP and port %d to send requests!\n", modbus_port);
+  Serial.printf("Use the shown IP and port %d to send requests!\n", modbus_port);
 }
 
 // Do nothing
