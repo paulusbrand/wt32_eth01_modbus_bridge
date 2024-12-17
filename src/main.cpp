@@ -1,14 +1,8 @@
-// =================================================================================================
-// eModbus: Copyright 2020 by Michael Harwerth, Bert Melis and the contributors to ModbusClient
-//               MIT license - see license.md for details
-// =================================================================================================
-// Includes: <Arduino.h> for Serial etc., WiFi.h for WiFi support
-//
 // Dependency Graph
-// |-- SPI @ 3.0.5
+// |-- SPI @ 2.0.0
 // |-- eModbus @ 1.7.2+sha.18a5a88
 // |-- AsyncTCP @ 1.1.1+sha.17039c3
-// |-- WiFi @ 3.0.5
+// |-- WiFi @ 2.0.0
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -38,6 +32,7 @@ void WiFiEvent(WiFiEvent_t event)
       break;
     case ARDUINO_EVENT_ETH_CONNECTED:
       Serial.println("ETH Connected");
+      //ETH.enableIpV6();
       break;
     case ARDUINO_EVENT_ETH_GOT_IP:
       Serial.print("ETH MAC: ");
@@ -52,7 +47,9 @@ void WiFiEvent(WiFiEvent_t event)
       Serial.println("Mbps");
       break;
     case ARDUINO_EVENT_ETH_GOT_IP6:
-      Serial.println("We even have IPv6!");
+      Serial.print("Local IPv6: ");
+      Serial.println(ETH.localIPv6());
+      break;
     case ARDUINO_EVENT_ETH_DISCONNECTED:
       Serial.println("ETH Disconnected");
       break;
@@ -83,7 +80,7 @@ void setup() {
   WiFi.onEvent(WiFiEvent);
   
   // Start ethernet
-  ETH.begin(ETH_PHY_TYPE, ETH_PHY_ADDR, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_POWER, ETH_CLK_MODE);
+  ETH.begin();
 
   // Define and start Ethernet modbus bridge for adresses 246 and 247
   MBbridge.attachServer(247, 247, ANY_FUNCTION_CODE, &MB);
